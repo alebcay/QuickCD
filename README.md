@@ -21,7 +21,7 @@ You can list all of your bookmarked directories by: `qcd [-l|--list]`
 You can remove a bookmark by: `qcd [-d|--delete] horse`
 
 ## TODO:
-* [ ] We also need to validate inputs before the script can execute.
 * [ ] Create Debian package.
 * [ ] Create RPM Package.
 * [ ] Create Arch Package.
+* [ ] Add a purge option to the `uninstall.sh` that deletes the `~/.qcd` directory.
