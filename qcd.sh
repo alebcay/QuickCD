@@ -1,53 +1,55 @@
 #!/bin/bash
 
-handle_options() {
-local OPTIND
-
 mkdir -p ~/.qcd
 favourite_locations=~/.qcd/favourite_locations
 touch "$favourite_locations"
 
-local OPTIND
-
-echo "$@"
-# Parse options to the `pip` command
-while getopts ":hlsd:" opt; do
-  case $opt in
-    h )
-      echo "Usage:"
-      echo "    qcd [-h|--help]                      Display this help message."
-      echo "    qcd [-l|--list]                      List all bookmarked locations."
-      echo "    qcd [-s|--save]                      Save current location to bookmarks."
-      echo "    qcd [-d|--delete] <directory-name>   Deletes the specified directory from bookmarks."
-      echo "    qcd <directory-name>                 Changes working directory to the specified bookmarked directory."
-      ;;
-    l )
-      # list
-      echo list
-      cat $favourite_locations | cut -d ':' -f 2
-    ;;
-    s )
-      # save
-      echo save
-      dir="$(pwd)"
-	  name=$(echo $dir | sed "s|[0-9A-Za-z/\-\_.\!@#$%^&*()+=]*/||g")
-	  echo "$dir:$name" >> $favourite_locations
-    ;;
-    d )
-      # delete
-      echo delete
-      echo "$OPTARG"
-      sed -i "/$OPTARG/Id" $favourite_locations
-    ;;
-   \? )
-     echo "Invalid option: $OPTARG" 1>&2
-     ;;
-  esac
-done
-
-location=$1
-[[ ! -v location ]] && cd "$(cat $favourite_locations | grep -i $1 | cut -d ':' -f 1)"
-
+usage() {
+	echo "Usage:"
+	echo "    qcd [-h|--help]                      Display this help message."
+	echo "    qcd [-l|--list]                      List all bookmarked locations."
+	echo "    qcd [-s|--save]                      Save current location to bookmarks."
+	echo "    qcd [-d|--delete] <directory-name>   Deletes the specified directory from bookmarks."
+	echo "    qcd <directory-name>                 Changes working directory to the specified bookmarked directory."
 }
 
-handle_options "$@"
+list() {
+	cat $favourite_locations | cut -d ':' -f 2
+}
+
+save() {
+	dir="$(pwd)"
+	name=$(echo $dir | sed "s|[0-9A-Za-z/\-\_.\!@#$%^&*()+=]*/||g")
+	echo "$dir:$name" >> $favourite_locations
+}
+
+delete() {
+	sed -i "/$1/Id" $favourite_locations
+}
+
+first_arg="$1"
+second_arg="$2"
+
+if [[ ! -v first_arg ]]; then
+	usage
+elif [[ $first_arg == "--help"   ]] || [[ $first_arg == "-help"   ]] || [[ $first_arg == "-h" ]]; then
+	usage
+elif [[ $first_arg == "--list"   ]] || [[ $first_arg == "-list"   ]] || [[ $first_arg == "-l" ]]; then
+	list
+elif [[ $first_arg == "--save"   ]] || [[ $first_arg == "-save"   ]] || [[ $first_arg == "-s" ]]; then
+	save
+elif [[ $first_arg == "--delete" ]] || [[ $first_arg == "-delete" ]] || [[ $first_arg == "-d" ]]; then
+	[[ -v second_arg ]] && delete "$second_arg" || usage
+else
+	echo $favourite_locations
+	cd "$(cat $favourite_locations | grep -i $first_arg | cut -d ':' -f 1)"
+fi
+
+
+
+
+
+
+
+
+
