@@ -1,8 +1,5 @@
 # QuickCD
-Bookmarks for your terminal!
-
-# gitbaby
-A git extension that eases the access to the git repos you use frequently. </br>
+Bookmark locations that you visit frequently in your terminal!
 
 ## Installation
 * Clone this repo: `git clone https://github.com/lordadamson/QuickCD`
